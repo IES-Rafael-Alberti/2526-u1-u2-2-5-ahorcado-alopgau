@@ -265,17 +265,28 @@ He usado el depurador múltiples veces durante el proceso de desarrollo, pero me
 
 Durante la implementación del dibujo, me di cuenta que ocurría lo siguiente:
 
-![](demostracionahorcado1.png)
+![](capturas/demostracionahorcado1.png)
+
 Como vemos, con 4 fallos se pintan la cabeza, el cuerpo y ambas piernas, sin embargo, al 5º fallo:
 
-![](demostracionahorcado2.png)
+![](capturas/demostracionahorcado2.png)
+
 vemos que, como correspondería, se pinta el brazo izquierdo, sin embargo, ambas piernas han desaparecido.
 
-Asi que añadiendo un breakpoint en la entrada de la función que dibuja las piernas: ![](breakpoint.png)
+Asi que añadiendo un breakpoint en la entrada de la función que dibuja las piernas: 
+
+![](capturas/breakpoint.png)
+
 y cambiando desde el depurador la variable fallos a 4, que es justo antes de que se dibuje el 1º brazo, comencé a ejecutar paso a paso
-![](variablefallos.png)
+
+![](capturas/variablefallos.png)
+
 Una vez entre dentro de la función `dibujarpiernas()` con `F10` vi el `elif` de aquí, encargado de mostrar ambas piernas:
-![](demostracionbug.png)
-tenía == en lugar de >= lo que hacia que las piernassolo se imprimiesen puntualmente en el fallo 4. Al cambiar el operador, vemos que todo funcionaba correctamente:
+
+![](capturas/demostracionbug.png)
+
+tenía == en lugar de >= lo que hacia que las piernas solo se imprimiesen puntualmente en el fallo 4. Al cambiar el operador, vemos que todo funcionaba correctamente:
+
 ![](capturas/Pasted%20image%2020251109012657.png)
+
 Como vemos, ahora al 5º fallo se mantienen las piernas, tal como buscabamos
