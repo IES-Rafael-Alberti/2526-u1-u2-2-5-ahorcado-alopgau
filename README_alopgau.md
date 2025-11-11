@@ -1,212 +1,281 @@
+# AHORCADO - Juego de adivinanza de palabras
 
-> CLI que, **dada una IP, establece si esta es válida  y en caso de serlo muestra su clase**
+> Juego del **ahorcado** que utiliza una **API de palabras aleatorias** para seleccionar términos en español.
+
+> **Interfaz visual con dibujo progresivo del ahorcado según los fallos**
 
 ---
+
+## Índice
+
+1. [Descripción del módulo](#1-descripción-del-módulo)
+2. [Requisitos](#2-requisitos)
+3. [Instalación](#3-instalación-de-python-y-dependencias)
+   - 3.1 [Instalación de Python](#31-instalación-de-python)
+   - 3.2 [Instalación de dependencias](#32-instalación-de-dependencias)
+   - 3.3 [Entorno virtual](#33-entorno-virtual-opcional-recomendado)
+4. [Ejecución](#4-ejecución-del-juego)
+   - 4.1 [Sintaxis general](#sintaxis-general)
+   - 4.2 [Ejemplos de ejecución](#ejemplos-de-ejecución)
+5. [Funcionalidades](#5-funcionalidades)
+   - 5.1 [Obtención de palabras](#obtención-de-palabras)
+   - 5.2 [Validación de entrada](#validación-de-entrada)
+   - 5.3 [Interfaz visual](#interfaz-visual)
+   - 5.4 [Gestión del juego](#gestión-del-juego)
+6. [Estructura del código](#6-estructura-del-código)
+   - 6.1 [Funciones principales](#funciones-principales)
+   - 6.2 [Funciones de dibujo](#funciones-de-dibujo)
+   - 6.3 [Utilidades](#utilidades)
+7. [Mensajes y errores](#7-mensajes-y-errores)
+8. [Problemas frecuentes](#8-problemas-frecuentes-faq)
+9. [API utilizada](#9-api-utilizada)
+10. [Evidencias de depuración](#10-evidencias-de-depuración)  
 ## 1) Descripción del módulo
 
-  
+Este proyecto implementa el **juego clásico del ahorcado** donde el jugador debe adivinar una palabra letra por letra.
 
-Este proyecto implementa un **comprobador de IPs**.
+- La **palabra objetivo** se obtiene automáticamente desde una API externa de palabras aleatorias en español.
+- El programa **valida las entradas** del usuario y controla el progreso del juego.
+- Se muestra un **dibujo progresivo del ahorcado** según la cantidad de errores cometidos.
 
-- La IP se introduce directamente como una cadena de texto
-
-- La IP **debe estar formada por 4 octetos** (dígitos de 0 a 255) separados por punto
-
-Las clases de IP se establecen de la siguiente manera:  
-
-| Clase | Rango de Dirección IP       | Rango del primer octeto | Uso principal                               |
-| ----- | --------------------------- | ----------------------- | ------------------------------------------- |
-| A     | 0.0.0.0 - 127.255.255.255   | 0 - 127                 | Redes muy grandes (muchos hosts)            |
-| B     | 128.0.0.0 - 191.255.255.255 | 128 - 191               | Redes medianas (empresas)                   |
-| C     | 192.0.0.0 - 223.255.255.255 | 192 - 223               | Redes pequeñas (LANs)                       |
-| D     | 224.0.0.0 - 239.255.255.255 | 224 - 239               | Multicast (transmisión a múltiples hosts)   |
-| E     | 240.0.0.0 - 255.255.255.255 | 240 - 255               | Experimental (reservada para investigación) |
+El juego sigue estas reglas:
+- Máximo **6 fallos** permitidos
+- Se muestran las **letras ya intentadas**
+- La palabra se representa con guiones que se revelan progresivamente
+- Al final de cada partida, se pregunta si se desea continuar jugando
 
 ---
+
 ## 2) Requisitos
 
-- **Python 3.10 o superior**.
+- **Python 3.6 o superior**.
+- **Dependencia externa**: `requests` (para conexión con la API).
+- **Sistema operativo**: Windows, Linux o macOS.
+- **Conexión a Internet** (para obtener palabras de la API).
 
-- **Sin dependencias externas obligatorias.**
 ---
 
-## 3) Instalación de Python
+## 3) Instalación de Python y dependencias
 
-### 3.1 Linux
+### 3.1 Instalación de Python
 
-#### Debian/Ubuntu (y derivados)
+#### Linux
+
 ```bash
+# Debian/Ubuntu
 sudo apt update
-sudo apt install -y python3 python3-pip python3-venv
-python3 --version
-python3 -m pip --version
-```
+sudo apt install -y python3 python3-pip
 
-#### Fedora
-```bash
-sudo dnf install -y python3 python3-pip python3-virtualenv
-python3 --version
-python3 -m pip --version
-```
+# Fedora
+sudo dnf install -y python3 python3-pip
 
-#### Arch/Manjaro
-```bash
+# Arch/Manjaro
 sudo pacman -S --needed python python-pip
-python --version
-python -m pip --version
 ```
 
-> **Entorno virtual (opcional recomendado)**
+#### Windows
+
+1. Descargar desde **[https://www.python.org/downloads/](https://www.python.org/downloads/)** 
+2. **Marcar** "**Add Python to PATH**" durante la instalación.
+3. Verificar en PowerShell:
+```powershell
+py --version
+py -m pip --version
+```
+
+### 3.2 Instalación de dependencias
+
 ```bash
-python3 -m venv .venv
-# Activar:
+# Instalar la librería requests
+pip install requests
+
+# O usando el módulo pip de Python
+python -m pip install requests
+```
+
+### 3.3 Entorno virtual (opcional recomendado)
+
+```bash
+# Crear entorno virtual
+python -m venv .venv
+
+# Activar entorno virtual
 # Linux/macOS:
 source .venv/bin/activate
-# (Salir: 'deactivate')
-```
+# Windows:
+# .\.venv\Scripts\Activate.ps1
 
-### 3.2 Windows
-
-#### Opción A — Microsoft Store
-1. Abrir **Microsoft Store**, buscar **Python 3.x** (Python Software Foundation).
-2. Instalar y verificar:
-```powershell
-py --version
-py -m pip --version
-```
-
-#### Opción B — Instalador oficial
-1. Descargar desde **https://www.python.org/downloads/** el instalador de Python 3.x.
-2. **Marcar** “**Add Python to PATH**” durante la instalación.
-3. Verificar:
-```powershell
-py --version
-py -m pip --version
-```
-
-> **Entorno virtual (opcional)**
-```powershell
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-# (Salir: 'deactivate')
+# Instalar dependencias en el entorno virtual
+pip install requests
 ```
 
 ---
 
-## 4) Ejecución del módulo
-
-  
+## 4) Ejecución del juego
 
 ### Sintaxis general
 
 ```bash
-
-python direccionesip.py DIRECCIÓN
-
+python ahorcado.py
 ```
-
-- `DIRECCIÓN`: **Dirección IP a evaluar**
-
-  
 
 > En Windows puedes usar `py` en lugar de `python`.
 
 > En Linux, si conviven varias versiones, usa `python3`.
 
 ---
-### Ejemplos
 
-**IP Clase A**
+### Ejemplos de ejecución
 
-```bash
-# Entrada esperada
-# Linux/macOS
-python3 direccionesip.py 1.1.1.1
-# Windows
-python direccionesip.py 1.1.1.1
-# Salida esperada
-IP válida Clase A
-```
-
-**IP Clase B**
+**Inicio del juego**
 
 ```bash
-# Entrada esperada
 # Linux/macOS
-python3 direccionesip.py 128.0.0.0
+python3 ahorcado.py
 # Windows
-python direccionesip.py 128.0.0.0
-# Salida esperada
-IP válida Clase B
+python ahorcado.py
+
+# Salida esperada inicial
+==================================================
+------------------AHORCADO-------------------
+==================================================
+Ingresa una letra: 
 ```
 
-**IP Clase C**
+**Durante el juego**
 
-```bash
-# Entrada esperada
-# Linux/macOS
-python3 direccionesip.py 192.0.0.0
-# Windows
-python direccionesip.py 192.0.0.0
-# Salida esperada
-IP válida Clase C
+```
+Fallos: 1/6
+------
+Letras introducidas:  ['A', 'E', 'I']
+
+Ingresa una letra: 
 ```
 
-**IP Clase D**
+**Victoria**
 
-```bash
-# Entrada esperada
-# Linux/macOS
-python3 direccionesip.py 224.0.0.0
-# Windows
-python direccionesip.py 224.0.0.0
-# Salida esperada
-IP válida Clase D
+```
+Ganaste! La palabra era programación
+¿Quieres seguir jugando? (S/N)
 ```
 
-**IP Clase E**
+**Derrota**
 
-```bash
-# Entrada esperada
-# Linux/macOS
-python3 direccionesip.py 240.0.0.0
-# Windows
-python direccionesip.py 240.0.0.0
-# Salida esperada
-IP válida Clase E
 ```
-
-**IP errónea**
-
-```bash
-# Entrada esperada
-# Linux/macOS
-python3 direccionesip.py 240.0.0.a
-# Windows
-python direccionesip.py 240.0.0.a
-# Salida esperada
-La IP no es válida (hay dígitos menores a 0 o letras)
+Has perdido... La palabra era elefante
+¿Quieres seguir jugando? (S/N)
 ```
-
 
 ---
-## 6) Mensajes de error y códigos de salida
 
-  
+## 5) Funcionalidades
 
-- **Octeto inválido** (>255)
+### Obtención de palabras
 
-- Mensaje: `La IP no es válida (hay digitos mayores a 255)`
+- Utiliza **Random Word API** (`https://random-word-api.herokuapp.com/word?lang=es&number=1`)
+- Retorna palabras aleatorias en español
+- Una palabra por ronda
 
-- **Octeto inválido** (Negativo o letra)
+### Validación de entrada
 
--  Mensaje: `La IP no es válida (hay dígitos menores a 0 o letras)`
+- Comprueba que la entrada sea **una sola letra**
+- Verifica que **no se haya introducido antes**
+- Acepta tanto mayúsculas como minúsculas
+- Rechaza números, símbolos y entradas múltiples
 
-- **Demasiados octetos** o separadores
+### Interfaz visual
 
-- Mensaje: `La IP tiene más de 4 octetos`
+- **Dibujo progresivo del ahorcado** según los fallos:
+  - 1 fallo: cabeza
+  - 2 fallos: cuerpo
+  - 3 fallos: pierna izquierda
+  - 4 fallos: ambas piernas
+  - 5 fallos: brazo izquierdo
+  - 6 fallos: brazo derecho (juego perdido)
+
+- **Palabra oculta** mostrada con guiones
+- **Letras intentadas** visibles en todo momento
+- **Contador de fallos** actualizado
+
+### Gestión del juego
+
+- **Limpieza de pantalla** entre intentos
+- **Sistema de rondas** continuas
+- **Opción para reiniciar** o finalizar después de cada partida
+
 ---
-## 7) Problemas frecuentes (FAQ)
-- **“python: command not found” / “py no se reconoce”** → Instala Python o ajusta el **PATH** (ver sección 3).
-- **“pip no se reconoce”** → Usa `python -m pip` (o `py -m pip` en Windows).
-- **Si hay un error, sigue las instrucciones dadas. (asegurándote de que la IP cumple este formato `X.X.X.X`**)
+
+## 6) Estructura del código
+
+### Funciones principales:
+
+- `procesarjuego()`: Coordina la preparación y ejecución del juego
+- `procesarronda()`: Gestiona una ronda completa del juego
+- `procesarletra()`: Valida y procesa la entrada del usuario
+- `comprobarintento()`: Evalúa si el intento es correcto
+- `anadirletra()`: Revela las letras acertadas en la palabra
+- `dibujarahorcado()`: Controla el dibujo progresivo del ahorcado
+- `preguntacontinuar()`: Gestiona la continuación del juego
+
+### Funciones de dibujo:
+
+- `dibujarcabeza()`
+- `dibujarcuerpoybrazos()`
+- `dibujarpiernas()`
+- `dibujarpiernaizquierda()`
+
+### Utilidades:
+
+- `elegirpalabra()`: Obtiene palabra de la API
+- `limpiarpantalla()`: Limpia la consola
+
+---
+
+## 7) Mensajes y errores
+
+- **Entrada inválida**: "La letra X ya ha sido introducida, o no es una letra sino varias, o es un número"
+- **Letra incorrecta**: "La letra X no se encuentra en la palabra"
+- **Victoria**: "Ganaste! La palabra era [PALABRA]"
+- **Derrota**: "Has perdido... La palabra era [PALABRA]"
+- **Continuación**: "¿Quieres seguir jugando? (S/N)"
+
+---
+
+## 8) Problemas frecuentes (FAQ)
+
+- **"ModuleNotFoundError: No module named 'requests'"** → Instala la dependencia con `pip install requests`
+- **Error de conexión** → Verifica tu conexión a Internet (la API requiere conexión)
+- **"python: command not found"** → Instala Python o ajusta el **PATH**
+- **Caracteres especiales no mostrados correctamente** → Asegúrate de que la terminal soporte UTF-8
+- **La API no responde** → El servicio podría estar temporalmente fuera de línea
+
+---
+
+## 9) API utilizada
+
+- **Nombre**: Random Word API
+- **URL**: `https://random-word-api.herokuapp.com/word`
+- **Parámetros**: `lang=es` (español), `number=1` (una palabra)
+- **Formato respuesta**: JSON array con una palabra
+
+---
+## 10) Evidencias de depuración 
+
+He usado el depurador múltiples veces durante el proceso de desarrollo, pero me centraré en la última vez que lo he usado:
+
+Durante la implementación del dibujo, me di cuenta que ocurría lo siguiente:
+
+![](demostracionahorcado1.png)
+Como vemos, con 4 fallos se pintan la cabeza, el cuerpo y ambas piernas, sin embargo, al 5º fallo:
+
+![](demostracionahorcado2.png)
+vemos que, como correspondería, se pinta el brazo izquierdo, sin embargo, ambas piernas han desaparecido.
+
+Asi que añadiendo un breakpoint en la entrada de la función que dibuja las piernas: ![](breakpoint.png)
+y cambiando desde el depurador la variable fallos a 4, que es justo antes de que se dibuje el 1º brazo, comencé a ejecutar paso a paso
+![](variablefallos.png)
+Una vez entre dentro de la función `dibujarpiernas()` con `F10` vi el `elif` de aquí, encargado de mostrar ambas piernas:
+![](demostracionbug.png)
+tenía == en lugar de >= lo que hacia que las piernassolo se imprimiesen puntualmente en el fallo 4. Al cambiar el operador, vemos que todo funcionaba correctamente:
+![](capturas/Pasted%20image%2020251109012657.png)
+Como vemos, ahora al 5º fallo se mantienen las piernas, tal como buscabamos
